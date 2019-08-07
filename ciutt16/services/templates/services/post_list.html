@@ -1,0 +1,69 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Cursos{% endblock %}
+{% block content %}
+{% include 'services/includes/posts_menu.html' %}
+<main role="main">
+  <div class="container mb-4">
+    <!--|dictsort:"id" reversed-->
+    {% for post in post_list %}
+      <div class="row mt-3">
+        <div class="col-md-9 mx-auto">
+          <h2 class="mb-4">{{post.title}}</h2>
+          <div>
+            <strong>{{post.schedule}}</strong><br>
+            <i>Edificio {{post.place}} Aula {{post.classroom}}</i><br>
+            {% if post.status == 'Finalizado' %}
+              <b style="color: RGB(195,53,56)">{{post.status}}</b><br>
+            {% elif post.status == 'Pendiente' %}
+              <b style="color: RGB(122,186,5)">{{post.status}}</b><br>
+            {% else %}
+              <b style="color: black">{{post.status}}</b><br>
+            {% endif %}
+            <p>{{post.content|striptags|safe|truncatechars:"200"}}</p>
+            <i>Publicado: {{post.published}}</i><br>
+            <p><a class="btn btn-success" href="{% url 'posts:post' post.id post.title|slugify %}">Leer más</a>
+              
+              {% if request.user.is_staff %}
+                <a class="btn btn-warning" href="{% url 'posts:update' post.id %}">Editar</a>
+                <a class="btn btn-danger" href="{% url 'posts:delete' post.id %}">Borrar</a>
+              {% endif %}
+              
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    <!-- Menú de paginación -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+          <li class="page-item ">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">&laquo;</a>
+          </li>
+        {% endif %}
+        {% for i in paginator.page_range %}
+          <li class="page-item {% if page_obj.number == i %}active{% endif %}">
+            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+          </li>
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <li class="page-item ">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">&raquo;</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</main>
+{% endblock %}

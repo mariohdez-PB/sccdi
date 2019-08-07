@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}{% endblock %}</title>
+    {% load static %}
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css?family=Raleway:400,400i,700,700i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i" rel="stylesheet">
+    <!-- Estilos -->
+    <link href="{% static 'core/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'core/vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'core/css/main.css' %}" rel="stylesheet">
+    <style type="text/css">
+      body{
+        background-color: RGB(230,230,230);
+      }
+      a:link.am_link {
+        background-color: transparent;
+        text-decoration: none; 
+      }
+      a:hover.am_link{
+        color: #800623;
+      }
+      #link_footer{
+        color: RGB(76,167,2);
+        background-color: transparent;
+        text-decoration: none;
+      }
+      #link_footer:hover{
+        color: green;
+        text-decoration: none;
+      }
+      #link_nav{
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+      #link_nav a:hover {
+        background-color: transparent; ;
+        color: lightgray !important;
+      }
+      footer {
+        color: gray;
+      }   
+      .btn-warning{
+        color: white !important;
+        background-color: RGB(255,149,31) !important;
+        border: 1px solid RGB(255,149,31) !important;
+      }
+      .btn-warning:hover{
+        background-color: RGB(255,108,0) !important;
+      }
+      .btn-success{
+        background-color: RGB(122,186,5) !important;
+        border: 1px solid RGB(122,186,5) !important;
+      }
+      .btn-success:hover{
+        background-color: RGB(76,167,2) !important;
+      }
+      .btn-danger{
+        background-color: RGB(195,53,56) !important;
+        border: 1px solid RGB(195,53,56) !important;
+      }
+      .btn-danger:hover{
+        background-color: RGB(169,50,53) !important;
+      }
+      .form-control:focus{
+        border: 1px solid RGB(122,186,5) !important;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px RGB(122,186,5);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+    <!-- Navegación -->
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <!--<a class="navbar-brand" href="{% url 'home' %}">CIUTT</a>-->
+          <a href="{% url 'home' %}"> <img src="{% static 'core/img/logo_ciutt_drk.png' %}"> </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ned" aria-controls="ned" aria-expanded="false">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="ned">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'home' %}">Inicio</a>
+              </li>
+              <!-- Dropdown -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="{% url 'pages:pages' %}" id="navbardrop" data-toggle="dropdown">
+                  Nosotro
+                </a>
+                <div class="dropdown-menu bg-dark">
+                  {% load pages_extras %}
+                  {% get_page_list as page_list %}
+                  {% for page in page_list %}
+                  <div id="link_nav">
+                    <a style="color:gray;" class="dropdown-item" href="{% url 'pages:page' page.id page.title|slugify %}">{{page.title}}</a>
+                  </div>
+                  {% endfor %}
+                </div>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                  Idiomas
+                </a>
+                <div class="dropdown-menu bg-dark">
+                  {% load services_extras %}
+                  {% get_service_list as service_list %}
+                  {% for service in service_list %}
+                  <div id="link_nav">
+                    <a style="color:gray;" class="dropdown-item" href="{% url 'services:service' service.id service.title|slugify %}">{{service.title}}</a>
+                  </div>
+                  {% endfor %}
+                </div>
+              </li>
+              {% if request.user.is_staff %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'signup' %}">Registro</a>
+                </li>
+              {% endif %}
+              {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'profiles:list' %}">Perfiles</a>
+                </li>
+              {% endif %}
+            </ul>
+            <ul class="navbar-nav">
+              {% if not request.user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'login' %}">Acceder</a>
+                </li>
+              {% else %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'messenger:list' %}">Mensajes</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'profile' %}">Perfil</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'logout' %}">Salir</a>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+      
+    <section>
+      <!-- Contenido -->
+      {% block content %}{% endblock %}
+    </section>
+
+    <!-- Footer -->
+    <footer class="page-footer font-small pt-4 bg-dark">
+      <!-- Footer Links -->
+      <div class="container text-center text-md-left">
+        <!-- Grid row -->
+        <div class="row">
+          <!-- Grid column -->
+          <div class="col-md-4 mx-auto">
+            <!-- Content -->
+            <h5 class="font-weight-bold text-uppercase mt-3 mb-4">NUESTRA UNIVERSIDAD</h5>
+            <p class="text-justify">La <a id="link_footer" href="www.uttlaxcala.edu.mx">Universidad Tecnológica de Tlaxcala</a>, es una de las universidades públicas 
+              más importantes del Estado. Fue creada oficialmente el 14 de Febrero de 1996 
+              con el propósito de crear, preservar y transmitir la técnica y la cultura 
+              universal en el campo de la tecnología. </p>
+            <a id="link_footer" href="www.uttlaxcala.edu.mx">www.uttlaxcala.edu.mx</a> 
+          </div>
+          <!-- Grid column -->
+          <hr class="clearfix w-100 d-md-none">
+          <!-- Grid column -->
+          <div class="col-md-2 mx-auto">
+            <!-- Links -->
+            <h5 class="font-weight-bold text-uppercase mt-3 mb-4">NOSOTROS</h5>
+            <ul class="list-unstyled">
+              {% load pages_extras %}
+              {% get_page_list as page_list %}
+              {% for page in page_list %}
+              <li>                
+                <a id="link_footer" href="{% url 'pages:page' page.id page.title|slugify %}">{{page.title}}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          <!-- Grid column -->
+          <hr class="clearfix w-100 d-md-none">
+          <!-- Grid column -->
+          <div class="col-md-2 mx-auto">
+            <!-- Links -->
+            <h5 class="font-weight-bold text-uppercase mt-3 mb-4">IDIOMAS</h5>
+            <ul class="list-unstyled">
+              {% load services_extras %}
+              {% get_service_list as service_list %}
+              {% for service in service_list %}
+              <li>                
+                <a id="link_footer" href="{% url 'services:service' service.id service.title|slugify %}">{{service.title}}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          <!-- Grid column -->
+          <hr class="clearfix w-100 d-md-none">
+          <!-- Grid column -->
+          <div class="col-md-2 mx-auto">
+            <!-- Links -->
+            <h5 class="font-weight-bold text-uppercase mt-3 mb-4">CONTACTO</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a id="link_footer"href="#!">Link 1</a>
+              </li>
+            </ul>
+          </div>
+          <!-- Grid column -->
+        </div>
+        <!-- Grid row -->
+      </div>
+      <!-- Footer Links -->
+      <hr>
+      <!-- Copyright -->
+      <div class="footer-copyright text-center py-3">
+        <p>
+        © 2019 Copyright 
+          <br> <h5>AM</h5>
+          Aldo Luría
+          <br> Mario Hernández
+        </p>
+        <!--<a class="am_link" href="#"> AM</a>-->
+      </div>
+      <!-- Copyright -->
+    </footer>
+    <!-- Footer -->
+    <!-- Javascript -->
+    <script src="{% static 'core/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'core/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'core/js/main.js' %}"></script>
+
+  </body>
+</html>

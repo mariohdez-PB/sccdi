@@ -1,0 +1,29 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Idiomas{% endblock %}
+{% block content %}
+{% include 'services/includes/services_menu.html' %}
+<main role="main">
+  <div class="container mb-4">
+    <!--|dictsort:"id" reversed-->
+    {% for service in service_list %}
+      <div class="row mt-3">
+        <div class="col-md-9 mx-auto">
+          <h2 class="mb-4">{{service.subtitle}}</h2>
+          <div>
+            <p>{{service.content|striptags|safe|truncatechars:"200"}}</p>
+            <p><a class="btn btn-success" href="{% url 'services:service' service.id service.title|slugify %}">Leer más</a>
+              
+              {% if request.user.is_staff %}
+                <a class="btn btn-warning" href="{% url 'services:update' service.id %}">Editar</a>
+                <a class="btn btn-danger" href="{% url 'services:delete' service.id %}">Borrar</a>
+              {% endif %}
+              
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}
